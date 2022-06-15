@@ -13,12 +13,7 @@ app = Flask(__name__, static_url_path='/static')
 CORS(app)
 
 TOKEN = os.environ.get('dataset_token')
-dataset = load_dataset("osanseviero/wordalle_prompts",
-                       use_auth_token=TOKEN)
-
-
-
-dataset = load_dataset("osanseviero/wordalle_prompts", use_auth_token=os.environ.get('dataset_token'))
+dataset = load_dataset("osanseviero/wordalle_prompts", use_auth_token=TOKEN)
 Path("static/images").mkdir(parents=True, exist_ok=True)
 
 # extract images and prompts from dataset and save to dis
@@ -46,5 +41,5 @@ def getdata():
     return app.send_static_file('data.json')
 
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=7860)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0',  port=int(os.environ.get('PORT', 7860)))

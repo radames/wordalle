@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"scripts": {
 		"dev": "svelte-kit dev --host 0.0.0.0",
-		"build": "svelte-kit build && rm -rf ../static && cp -rv build ../static",
+		"build": "svelte-kit build",
 		"build-dev": "NODE_ENV=development npm run build",
 		"package": "svelte-kit package",
 		"preview": "svelte-kit preview",
