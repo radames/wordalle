@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { colors } from '$lib/utils';
+	import { colors, cheersMessages } from '$lib/utils';
 	import type { Board } from '../types';
 	import { fade } from 'svelte/transition';
-	export let message: string | null = null;
 	export let board: Board;
 	export let currentRowIndex: number;
 	export let imagePaths: string[];
 
+	const message = cheersMessages[currentRowIndex];
 	import domtoimage from 'dom-to-image';
 	const imageBaseUrl = import.meta.env.MODE === 'development' ? 'http://localhost:7860/' : '';
 
@@ -20,8 +20,7 @@
 		try {
 			await navigator.clipboard.write([
 				new ClipboardItem({
-					'image/png': domtoimage.toBlob(node)
-				})
+					'image/png': domtoimage.toBlob(node, {bgcolor: "#000"})})
 			]);
 			copyState = true;
 			setTimeout(() => (copyState = false), 1000);
@@ -39,18 +38,16 @@
 <!-- Modal  made with tailwind -->
 <div class="modal relative z-2" transition:fade>
 	<div class="message">
-		{message}
-		<div class="max-w-xs border-0 p-3 mx-auto">
-			<div bind:this={elToShare}>
-				<div class="grid grid-cols-3 gap-2 max-w-md mx-auto p-3">
+		<div class="border-0">
+			<div class="p-3" bind:this={elToShare}>
+				<h2 class="text-center uppercase tracking-widest font-extrabold">{message}</h2>
+				<div class="grid grid-cols-3 gap-2 p-3">
 					{#each imagePaths as image}
 						<div>
 							<img src={imageBaseUrl + image} alt="" class="w-full h-full" />
 						</div>
 					{/each}
 				</div>
-				<pre class="text-[0.5rem]" />
-
 				<svg
 					class="w-full"
 					viewBox="0 0 {board[0].length * (p + s)} {board.length * (p + s)}"
@@ -69,9 +66,12 @@
 						{/each}
 					{/each}
 				</svg>
+				<p class="text-[0.6rem] font-extralight text-gray-300 opacity-50">
+					https://huggingface.co/spaces/huggingface-projects/wordalle
+				</p>
 			</div>
 		</div>
-		<p>
+		<p class="p-3 font-normal text-base">
 			Copy the result to clipboard
 			<button class="min-w-[6ch]" on:click={() => writeClipDOM(elToShare)}>
 				{!copyState ? 'Copy' : 'Copied'}
@@ -91,8 +91,7 @@
 
 <style lang="postcss" scoped>
 	.message {
-		@apply absolute left-1/2 top-16 text-white bg-black bg-opacity-80 font-semibold
-			p-10 z-20 rounded-md -translate-x-1/2 transition-opacity duration-300 ease-in-out;
+		@apply text-white bg-black bg-opacity-80 font-semibold p-10 z-20 rounded-md transition-opacity duration-300 ease-in-out mx-auto max-w-lg;
 	}
 	.modal {
 		@apply fixed top-0 left-0 w-screen min-h-screen z-10 bg-black bg-opacity-80 backdrop-blur-sm;

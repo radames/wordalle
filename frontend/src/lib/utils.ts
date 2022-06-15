@@ -32,3 +32,5 @@ export const colors = {
 	[LetterState.ABSENT]: '#d9d9d9',
 	[LetterState.INITIAL]: '#5d5d5d'
 };
+
+export const cheersMessages = ['Genius', 'Magnificent', 'Impressive', 'Splendid', 'Great', 'Phew'];

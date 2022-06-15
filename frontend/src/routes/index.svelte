@@ -28,7 +28,6 @@
 	// Feedback state: message and shake
 	let message = '';
 	let grid = '';
-	let result = '';
 	let shakeRowIndex = -1;
 	let success = false;
 	// Handle keyboard input.
@@ -117,9 +116,6 @@
 			if (currentRow.every((tile) => tile.state === LetterState.CORRECT)) {
 				// yay!
 				setTimeout(() => {
-					result = ['Genius', 'Magnificent', 'Impressive', 'Splendid', 'Great', 'Phew'][
-						currentRowIndex
-					];
 					success = true;
 				}, totalTime);
 			} else if (currentRowIndex < board.length - 1) {
@@ -164,8 +160,8 @@
 		{#if message}
 			<Message {message} />
 		{/if}
-		{#if result && success}
-			<Result {board} {currentRowIndex} {imagePaths} message={result} />
+		{#if success}
+			<Result {board} {currentRowIndex} {imagePaths} />
 		{/if}
 		<!-- <div class="message" transition:fade>
 			{message}
@@ -174,7 +170,7 @@
 			{/if}
 		</div> -->
 		<!-- {/if} -->
-		<header class="border-b-2">
+		<header>
 			<h1 class="text-3xl font-bold text-center">WORDALLE</h1>
 		</header>
 		<div class="grid grid-cols-3 gap-2 max-w-md mx-auto p-3">
