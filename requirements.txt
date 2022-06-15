@@ -1,0 +1,7 @@
+datasets
+flask
+flask_cors
+requests
+Pillow
+scipy
+gradio==3.0.17
