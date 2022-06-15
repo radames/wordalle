@@ -8,6 +8,7 @@
 	export let imagePaths: string[];
 
 	import domtoimage from 'dom-to-image';
+	const imageBaseUrl = import.meta.env.MODE === 'development' ? 'http://localhost:7860/' : '';
 
 	let elToShare: HTMLDivElement;
 	// let domToImage: DomToImage;
@@ -25,7 +26,7 @@
 			copyState = true;
 			setTimeout(() => (copyState = false), 1000);
 			console.log('Fetched image copied.');
-		} catch (err) {
+		} catch (err: DomToImageError) {
 			console.log(err.name, err.message);
 		}
 	}
@@ -44,7 +45,7 @@
 				<div class="grid grid-cols-3 gap-2 max-w-md mx-auto p-3">
 					{#each imagePaths as image}
 						<div>
-							<img src={image} alt="" class="w-full h-full" />
+							<img src={imageBaseUrl + image} alt="" class="w-full h-full" />
 						</div>
 					{/each}
 				</div>

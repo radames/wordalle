@@ -9,10 +9,10 @@
 	import Message from '$lib/Message.svelte';
 
 	import { onMount } from 'svelte';
-	import image from '$lib/assets/image1.jpg';
 
 	const totalTime = 1000;
-
+	const apiUrl = import.meta.env.MODE === 'development' ? 'http://localhost:7860/data' : 'data';
+	const imageBaseUrl = import.meta.env.MODE === 'development' ? 'http://localhost:7860/' : '';
 	// Get word of the day
 	let answer: string;
 	let imagePaths: string[];
@@ -35,7 +35,7 @@
 	let allowInput = true;
 
 	onMount(async () => {
-		const data = await fetch('data').then((d) => d.json());
+		const data = await fetch(apiUrl).then((d) => d.json());
 		const prompts: string[] = Object.keys(data);
 		const randomPrompt: string = prompts[~~(Math.random() * prompts.length)];
 		answer = randomPrompt.replace(/_/g, ' ');
@@ -180,7 +180,7 @@
 		<div class="grid grid-cols-3 gap-2 max-w-md mx-auto p-3">
 			{#each imagePaths as image}
 				<div>
-					<img src={image} alt="" class="w-full h-full" />
+					<img src={imageBaseUrl + image} alt="" class="w-full h-full" />
 				</div>
 			{/each}
 		</div>
