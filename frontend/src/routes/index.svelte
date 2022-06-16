@@ -43,7 +43,7 @@
 		cols = randomPrompt.length;
 		timePerTile = totalTime / cols;
 
-		board = Array.from({ length: 6 }, () =>
+		board = Array.from({ length: 7 }, () =>
 			Array.from(answer).map((l) => ({
 				letter: '',
 				correct: l,
@@ -171,8 +171,13 @@
 			{/if}
 		</div> -->
 		<!-- {/if} -->
-		<header>
-			<h1 class="text-3xl font-bold text-center">WORDALLE</h1>
+		<header class="flex justify-between items-center uppercase sm:px-2 text-center">
+			<span class="font-light flex-1 text-xs sm:text-base"> Guess the prompt!</span>
+			<span class="sm:block hidden mx-3 flex-1 border-[0.5px] border-opacity-50 border-gray-400"></span>
+			<h1 class="text-xl font-bold text-center">🥑 WORDALLE 🥑</h1>
+			<span class="sm:block hidden mx-3 flex-1  border-[0.5px] border-opacity-50 border-gray-400"></span>
+			<span class="font-light underline underline-offset-2 flex-1 text-xs sm:text-base">Skip to next</span>
+
 		</header>
 		<div class="grid grid-cols-3 gap-2 max-w-md mx-auto p-3">
 			{#each imagePaths as image}
@@ -213,8 +218,8 @@
 
 <style lang="postcss">
 	.board {
-		@apply grid gap-1.5 grid-rows-6 mx-0 my-auto;
-		--height: min(200px, calc(var(--vh, 100vh) - 310px));
+		@apply grid gap-1.5 grid-rows-[7] mx-0 my-auto;
+		--height: min(150px, calc(var(--vh, 100vh) - 310px));
 		height: var(--height);
 	}
 	.row {
@@ -224,7 +229,7 @@
 
 	.tile {
 		@apply w-full text-base text-center font-bold
-        uppercase select-none relative bg-gray-50;
+        uppercase select-none relative bg-gray-50 text-black;
 		vertical-align: middle;
 	}
 
@@ -240,10 +245,10 @@
 		-webkit-backface-visibility: hidden;
 	}
 	.tile .letter {
-		@apply bg-gray-50 w-full z-10;
+		@apply flex place-items-center h-full bg-gray-50 z-10;
 	}
 	.tile .space::before {
-		@apply absolute z-0 flex place-content-center text-black opacity-50;
+		@apply absolute z-0 flex place-items-center text-black opacity-50;
 		content: '•';
 	}
 

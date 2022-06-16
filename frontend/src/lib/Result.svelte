@@ -20,7 +20,8 @@
 		try {
 			await navigator.clipboard.write([
 				new ClipboardItem({
-					'image/png': domtoimage.toBlob(node, {bgcolor: "#000"})})
+					'image/png': domtoimage.toBlob(node, { bgcolor: '#000' })
+				})
 			]);
 			copyState = true;
 			setTimeout(() => (copyState = false), 1000);
@@ -49,8 +50,8 @@
 					{/each}
 				</div>
 				<svg
-					class="w-full"
-					viewBox="0 0 {board[0].length * (p + s)} {board.length * (p + s)}"
+					class="w-full p-3"
+					viewBox="0 0 {board[0].length * (p + s) - p} {board.length * (p + s) - p}"
 					xmlns="http://www.w3.org/2000/svg"
 				>
 					{#each board as row, y}
