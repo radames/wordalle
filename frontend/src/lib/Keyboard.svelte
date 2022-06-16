@@ -47,7 +47,7 @@
 	button {
 		@apply flex font-bold  m-0 mr-1 p-0 min-h-[30px] min-w-[30px] border-0
 				rounded-sm justify-center items-center uppercase cursor-pointer
-				transition-all duration-700 ease-in-out flex-1 select-none
+				transition-all duration-200 ease-in-out flex-1 select-none
 				bg-[#d3d6da] text-[#1a1a1b] hover:scale-105;
 	}
 </style>

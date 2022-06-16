@@ -173,11 +173,12 @@
 		<!-- {/if} -->
 		<header class="flex justify-between items-center uppercase sm:px-2 text-center">
 			<span class="font-light flex-1 text-xs sm:text-base"> Guess the prompt!</span>
-			<span class="sm:block hidden mx-3 flex-1 border-[0.5px] border-opacity-50 border-gray-400"></span>
+			<span class="sm:block hidden mx-3 flex-1 border-[0.5px] border-opacity-50 border-gray-400" />
 			<h1 class="text-xl font-bold text-center">🥑 WORDALLE 🥑</h1>
-			<span class="sm:block hidden mx-3 flex-1  border-[0.5px] border-opacity-50 border-gray-400"></span>
-			<span class="font-light underline underline-offset-2 flex-1 text-xs sm:text-base">Skip to next</span>
-
+			<span class="sm:block hidden mx-3 flex-1  border-[0.5px] border-opacity-50 border-gray-400" />
+			<span class="font-light flex-1 text-xs sm:text-base">
+				<button class="hover:no-underline underline underline-offset-2 hover:scale-105 transition-all duration-200 ease-in-out">Skip to next</button></span
+			>
 		</header>
 		<div class="grid grid-cols-3 gap-2 max-w-md mx-auto p-3">
 			{#each imagePaths as image}
