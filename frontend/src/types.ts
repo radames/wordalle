@@ -1,5 +1,5 @@
 export const enum LetterState {
-	INITIAL = 0,
+	INITIAL = '',
 	CORRECT = 'correct',
 	PRESENT = 'present',
 	ABSENT = 'absent'
@@ -8,5 +8,6 @@ export const enum LetterState {
 export interface Tile {
 	letter: string;
 	state: LetterState;
+	correct: string;
 }
 export type Board = Tile[][];

@@ -44,8 +44,9 @@
 		timePerTile = totalTime / cols;
 
 		board = Array.from({ length: 6 }, () =>
-			Array.from({ length: cols }, () => ({
+			Array.from(answer).map((l) => ({
 				letter: '',
+				correct: l,
 				state: LetterState.INITIAL
 			}))
 		);
@@ -189,8 +190,11 @@
 				>
 					{#each row as tile, index}
 						<div class="tile {tile.letter && 'filled'} {tile.state && 'revealed'}">
-							<div class="front" style="transition-delay: {index * timePerTile}ms;">
-								{tile.letter}
+							<div
+								class="front {tile.correct === ' ' ? 'space' : ''}"
+								style="transition-delay: {index * timePerTile}ms;"
+							>
+								<span class="letter">{tile.letter}</span>
 							</div>
 							<div
 								class="back {tile.state}"
@@ -220,11 +224,11 @@
 
 	.tile {
 		@apply w-full text-base text-center font-bold
-        uppercase select-none relative bg-zinc-100;
+        uppercase select-none relative bg-gray-50;
 		vertical-align: middle;
 	}
 
-	.tile.filled {
+	.tile .filled {
 		animation: zoom 0.2s;
 	}
 
@@ -234,6 +238,13 @@
 		absolute top-0 left-0 transition-transform duration-500;
 		backface-visibility: hidden;
 		-webkit-backface-visibility: hidden;
+	}
+	.tile .letter {
+		@apply bg-gray-50 w-full z-10;
+	}
+	.tile .space::before {
+		@apply absolute z-0 flex place-content-center text-black opacity-50;
+		content: '•';
 	}
 
 	.tile .front {
