@@ -25,7 +25,7 @@
 			copyState = true;
 			setTimeout(() => (copyState = false), 1000);
 			console.log('Fetched image copied.');
-		} catch (err: DomToImageError) {
+		} catch (err) {
 			console.log(err.name, err.message);
 		}
 	}
