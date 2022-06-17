@@ -52,7 +52,7 @@
 		currentRowIndex = 0;
 		letterStates = {}
 		allowInput= true;
-		
+
 		const prompts: string[] = Object.keys(promptsData);
 		currPromptIndex = ~~(Math.random() * prompts.length);
 		const randomPrompt: string = prompts[currPromptIndex];
@@ -203,7 +203,7 @@
 		<div class="grid grid-cols-3 gap-2 max-w-md mx-auto p-3">
 			{#each imagePaths as image}
 				<div>
-					<img src={imageBaseUrl + image} alt="" class="w-full h-full" />
+					<img src={imageBaseUrl + image} alt="" class="aspect-square w-full h-full" />
 				</div>
 			{/each}
 		</div>

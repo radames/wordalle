@@ -56,7 +56,7 @@
 				<div class="grid grid-cols-3 gap-2 p-3">
 					{#each imagePaths as image}
 						<div>
-							<img src={imageBaseUrl + image} alt="" class="w-full h-full" />
+							<img src={imageBaseUrl + image} alt="" class="aspect-square	w-full h-full" />
 						</div>
 					{/each}
 				</div>
