@@ -11,3 +11,12 @@ export interface Tile {
 	correct: string;
 }
 export type Board = Tile[][];
+
+export interface PromptsData {
+	[key: string]: string[];
+}
+
+export interface SuccessPrompt {
+	prompt: string;
+	idx: number;
+}

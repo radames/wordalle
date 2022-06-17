@@ -1,14 +1,14 @@
 <script lang="ts">
 	// original code inspired by Evan You https://github.com/yyx990803/vue-wordle/
 	import { LetterState } from '../types';
-	import type { Board } from '../types';
+	import type { Board, PromptsData, SuccessPrompt } from '../types';
 	import { clearTile, fillTile } from '$lib/utils';
 
 	import Keyboard from '$lib/Keyboard.svelte';
 	import Result from '$lib/Result.svelte';
 	import Message from '$lib/Message.svelte';
 
-	import { onMount } from 'svelte';
+	import { onMount, setContext } from 'svelte';
 
 	const totalTime = 1000;
 	const apiUrl = import.meta.env.MODE === 'development' ? 'http://localhost:7860/data' : 'data';
@@ -33,12 +33,24 @@
 	// Handle keyboard input.
 	let allowInput = true;
 
+	let promptsData: PromptsData;
+	let completedPrompts: SuccessPrompt[] = [];
+	let currPromptIndex: number;
+
 	onMount(async () => {
-		const data = await fetch(apiUrl).then((d) => d.json());
-		const prompts: string[] = Object.keys(data);
-		const randomPrompt: string = prompts[~~(Math.random() * prompts.length)];
+		promptsData = await fetch(apiUrl).then((d) => d.json());
+		restartBoard();
+
+		window.addEventListener('keyup', onKeyup);
+		return () => window.removeEventListener('keyup', onKeyup);
+	});
+
+	function restartBoard() {
+		const prompts: string[] = Object.keys(promptsData);
+		currPromptIndex = ~~(Math.random() * prompts.length);
+		const randomPrompt: string = prompts[currPromptIndex];
 		answer = randomPrompt.replace(/_/g, ' ');
-		imagePaths = data[randomPrompt].slice(0, 6);
+		imagePaths = promptsData[randomPrompt].slice(0, 6);
 		console.log(answer);
 		cols = randomPrompt.length;
 		timePerTile = totalTime / cols;
@@ -50,11 +62,8 @@
 				state: LetterState.INITIAL
 			}))
 		);
-
-		window.addEventListener('keyup', onKeyup);
 		document.body.style.setProperty('--cols', `${cols}`);
-		return () => window.removeEventListener('keyup', onKeyup);
-	});
+	}
 
 	const onKeyup = (e: KeyboardEvent) => {
 		onKey(e.key);
@@ -177,7 +186,11 @@
 			<h1 class="text-xl font-bold text-center">🥑 WORDALLE 🥑</h1>
 			<span class="sm:block hidden mx-3 flex-1  border-[0.5px] border-opacity-50 border-gray-400" />
 			<span class="font-light flex-1 text-xs sm:text-base">
-				<button class="hover:no-underline underline underline-offset-2 hover:scale-105 transition-all duration-200 ease-in-out">Skip to next</button></span
+				<button
+					on:click={() => restartBoard()}
+					class="hover:no-underline underline underline-offset-2 hover:scale-105 transition-all duration-200 ease-in-out"
+					>Skip to next</button
+				></span
 			>
 		</header>
 		<div class="grid grid-cols-3 gap-2 max-w-md mx-auto p-3">
