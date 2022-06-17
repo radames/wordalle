@@ -2,7 +2,7 @@
 	import { colors, cheersMessages } from '$lib/utils';
 	import type { Board } from '../types';
 	import { fade } from 'svelte/transition';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -14,6 +14,7 @@
 	import domtoimage from 'dom-to-image';
 	const imageBaseUrl = import.meta.env.MODE === 'development' ? 'http://localhost:7860/' : '';
 
+	let modalEl: HTMLDivElement;
 	let elToShare: HTMLDivElement;
 	let disableDownload: boolean = false;
 	async function saveFile(node: HTMLDivElement) {
@@ -38,13 +39,24 @@
 			console.log(err.name, err.message);
 		}
 	}
+	const onKeyup = (e: KeyboardEvent) => {
+		if (e.key === 'Escape') {
+			dispatch('restart');
+		} else if (e.key === ' ') {
+			saveFile(elToShare);
+		}
+	};
+	onMount(() => {
+		window.addEventListener('keyup', onKeyup);
+		return () => window.removeEventListener('keyup', onKeyup);
+	});
 	const s = 10;
 	const p = 1;
 	const rx = s / 10;
 </script>
 
 <!-- Modal  made with tailwind -->
-<div class="modal relative z-2" transition:fade>
+<div bind:this={modalEl} class="modal relative z-2" transition:fade>
 	<div class="message">
 		<div class="border-0">
 			<div class="p-3" bind:this={elToShare}>
@@ -81,7 +93,11 @@
 			</div>
 		</div>
 		<div class="p-3 px-6 flex text-base">
-			<button disabled={disableDownload} class="min-w-[15ch] flex-1 mr-1" on:click={() => saveFile(elToShare)}>
+			<button
+				disabled={disableDownload}
+				class="min-w-[15ch] flex-1 mr-1"
+				on:click={() => saveFile(elToShare)}
+			>
 				{!disableDownload ? 'SAVE SCREENSHOT' : 'SAVING..'}
 			</button>
 			<button class="flex-1 ml-1" on:click={() => dispatch('restart')}> TRY AGAIN </button>
