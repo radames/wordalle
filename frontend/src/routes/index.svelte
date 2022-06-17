@@ -78,7 +78,7 @@
 
 	function onKey(key: string) {
 		if (!allowInput) return;
-		if (/^[a-zA-Z ]$/.test(key)) {
+		if (/^[a-zA-Z]$/.test(key)) {
 			board = fillTile(board, currentRowIndex, key.toLowerCase());
 		} else if (key === 'Backspace') {
 			board = clearTile(board, currentRowIndex);

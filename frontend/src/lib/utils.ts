@@ -18,6 +18,9 @@ export function fillTile(board: Board, currentRowIndex: number, letter: string) 
 	const newBoard = [...board];
 	const currentRow = newBoard[currentRowIndex];
 	for (const tile of currentRow) {
+		if (tile.correct === ' ') {
+			tile.letter = ' ';
+		}
 		if (!tile.letter) {
 			tile.letter = letter;
 			break;
