@@ -61,7 +61,7 @@
 					{/each}
 				</div>
 				<svg
-					class="w-full p-3"
+					class="w-full p-3 mx-auto max-h-[30vh]"
 					viewBox="0 0 {board[0].length * (p + s) - p} {board.length * (p + s) - p}"
 					xmlns="http://www.w3.org/2000/svg"
 				>

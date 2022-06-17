@@ -37,11 +37,11 @@ export const colors = {
 };
 
 export const cheersMessages = [
-	'Genius',
-	'Magnificent',
-	'Impressive',
-	'Splendid',
-	'Great',
-	'Phew',
-	'Hugging'
+	'🤗 Hugging 🤗',
+	'🧞 Genius 🧞',
+	'🤩 Magnificent 🤩',
+	'😲 Impressive 😲',
+	'🧚 Splendid 🧚',
+	'✳ Great ✳',
+	'🍡 Phew 🍡',
 ];
