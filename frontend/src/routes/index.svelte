@@ -173,7 +173,7 @@
 </script>
 
 {#if board !== undefined}
-	<div class="max-w-screen-lg mx-auto px-1 relative z-0">
+	<div class="max-w-screen-lg mx-auto px-1 relative z-0 mt-3">
 		{#if message}
 			<Message {message} />
 		{/if}
