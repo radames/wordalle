@@ -59,8 +59,12 @@
 		allowInput = true;
 
 		const prompts: string[] = Object.keys(promptsData);
-		currPromptIndex = ~~(Math.random() * prompts.length);
-		const randomPrompt: string = prompts[currPromptIndex];
+		const idsToRemove = completedPrompts.map((e) => e.idx);
+		const promptsFiltered = prompts.filter((_, i) => !idsToRemove.includes(i));
+		const radomPromptId = ~~(Math.random() * promptsFiltered.length);
+		const randomPrompt: string = promptsFiltered[radomPromptId];
+		currPromptIndex = prompts.indexOf(randomPrompt)
+
 		answer = randomPrompt.replace(/_/g, ' ');
 		imagePaths = promptsData[randomPrompt].slice(0, 6);
 		console.log(answer);
