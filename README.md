@@ -6,6 +6,7 @@ colorTo: gray
 sdk: gradio
 sdk_version: 3.0.17
 app_file: main.py
+fullWidth: true
 pinned: false
 ---
 

@@ -50,9 +50,7 @@
 			<div class="p-3" bind:this={elToShare}>
 				<header class="p-3 flex justify-between items-center">
 					<h1 class="text-xs font-bold uppercase whitespace-nowrap">WORDALLE 🥑</h1>
-					<span class="font-light text-[0.6rem]"
-						><span class="text-gray-50 opacity-50">https://</span>hf.co/wordalle</span
-					>
+					<span class="font-light">hf.co/wordalle</span>
 				</header>
 				<h2 class="text-center uppercase tracking-widest font-extrabold">{message}</h2>
 				<div class="grid grid-cols-3 gap-2 p-3">
