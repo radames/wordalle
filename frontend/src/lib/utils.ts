@@ -1,6 +1,6 @@
 // original code inspired by Evan You https://github.com/yyx990803/vue-wordle/
 import { LetterState } from '../types';
-import type { Board } from '../types';
+import type { Board, BadgeComponent } from '../types';
 
 export function clearTile(board: Board, currentRowIndex: number) {
 	const newBoard = [...board];
@@ -36,7 +36,7 @@ export const colors = {
 	[LetterState.INITIAL]: '#5d5d5d'
 };
 
-export const badges = {
+export const badgesComponents: BadgeComponent = {
 	2: 'two',
 	5: 'five',
 	10: 'ten',

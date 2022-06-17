@@ -1,15 +1,16 @@
 <script lang="ts">
-	import { colors, cheersMessages } from '$lib/utils';
+	import { colors, cheersMessages, badgesComponents } from '$lib/utils';
 	import type { Board } from '../types';
-	import { fade } from 'svelte/transition';
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { fade, scale } from 'svelte/transition';
+	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
+	import type { SvelteComponent } from 'svelte';
 
 	const dispatch = createEventDispatcher();
 
 	export let board: Board;
 	export let currentRowIndex: number;
 	export let imagePaths: string[];
-
+	export let totalStreaks: number;
 	const message = cheersMessages[currentRowIndex];
 	import domtoimage from 'dom-to-image';
 	const imageBaseUrl = import.meta.env.MODE === 'development' ? 'http://localhost:7860/' : '';
@@ -17,6 +18,7 @@
 	let modalEl: HTMLDivElement;
 	let elToShare: HTMLDivElement;
 	let disableDownload: boolean = false;
+
 	async function saveFile(node: HTMLDivElement) {
 		disableDownload = true;
 		try {
@@ -46,9 +48,19 @@
 			saveFile(elToShare);
 		}
 	};
-	onMount(() => {
-		window.addEventListener('keyup', onKeyup);
-		return () => window.removeEventListener('keyup', onKeyup);
+
+	let badgeComponent: SvelteComponent;
+
+	onMount(async () => {
+		if (totalStreaks in badgesComponents) {
+			const compName = badgesComponents[totalStreaks];
+			badgeComponent = (await import(`./badges/${compName}.svelte`)).default;
+		}
+		window.addEventListener('keyup', onKeyup, true);
+	});
+
+	onDestroy(() => {
+		window.removeEventListener('keyup', onKeyup, true);
 	});
 	const s = 10;
 	const p = 1;
@@ -65,7 +77,15 @@
 					<span class="font-light">hf.co/wordalle</span>
 				</header>
 				<h2 class="text-center uppercase tracking-widest font-extrabold">{message}</h2>
-				<div class="grid grid-cols-3 gap-2 p-3">
+				<div class="grid grid-cols-3 gap-2 p-3 relative">
+					{#if totalStreaks in badgesComponents}
+						<div
+							transition:scale={{ duration: 500 }}
+							class="absolute left-0 right-0 top-0 bottom-0 flex place-content-center place-items-center"
+						>
+							<svelte:component this={badgeComponent} classNames="w-full max-w-[180px]" />
+						</div>
+					{/if}
 					{#each imagePaths as image}
 						<div>
 							<img src={imageBaseUrl + image} alt="" class="aspect-square	w-full h-full" />

@@ -8,7 +8,8 @@
 	import Result from '$lib/Result.svelte';
 	import Message from '$lib/Message.svelte';
 
-	import { onMount, setContext } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
+	import { browser } from '$app/env';
 
 	const totalTime = 1000;
 	const apiUrl = import.meta.env.MODE === 'development' ? 'http://localhost:7860/data' : 'data';
@@ -20,9 +21,13 @@
 	onMount(async () => {
 		promptsData = await fetch(apiUrl).then((d) => d.json());
 		restartBoard();
+		window.addEventListener('keyup', onKeyup, true);
+	});
 
-		window.addEventListener('keyup', onKeyup);
-		return () => window.removeEventListener('keyup', onKeyup);
+	onDestroy(() => {
+		if (browser) {
+			window.removeEventListener('keyup', onKeyup, true);
+		}
 	});
 
 	// Get word of the day
@@ -132,6 +137,8 @@
 			allowInput = false;
 			if (currentRow.every((tile) => tile.state === LetterState.CORRECT)) {
 				// yay!
+				completedPrompts = [...completedPrompts, { prompt: answer, idx: currPromptIndex }];
+				console.log(completedPrompts);
 				setTimeout(() => {
 					gameState = GameState.SUCESS;
 				}, totalTime);
@@ -176,10 +183,16 @@
 {#if board !== undefined}
 	<div class="max-w-screen-lg mx-auto px-1 relative z-0 mt-3">
 		{#if message}
-			<Message {message} {gameState} on:restart={restartBoard}/>
+			<Message {message} {gameState} on:restart={restartBoard} />
 		{/if}
 		{#if gameState === GameState.SUCESS}
-			<Result {board} {currentRowIndex} {imagePaths} on:restart={restartBoard} />
+			<Result
+				{board}
+				{currentRowIndex}
+				{imagePaths}
+				totalStreaks={completedPrompts.length}
+				on:restart={restartBoard}
+			/>
 		{/if}
 		<!-- <div class="message" transition:fade>
 			{message}
