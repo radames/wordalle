@@ -132,6 +132,8 @@
 	}
 	.modal {
 		@apply fixed top-0 left-0 w-screen min-h-screen z-10 bg-black bg-opacity-80 backdrop-blur-sm;
+		transform: translateZ(1000px);
+		transform-style: preserve-3d;
 	}
 	.go-tweet,
 	button {

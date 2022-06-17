@@ -63,7 +63,7 @@
 		const promptsFiltered = prompts.filter((_, i) => !idsToRemove.includes(i));
 		const radomPromptId = ~~(Math.random() * promptsFiltered.length);
 		const randomPrompt: string = promptsFiltered[radomPromptId];
-		currPromptIndex = prompts.indexOf(randomPrompt)
+		currPromptIndex = prompts.indexOf(randomPrompt);
 
 		answer = randomPrompt.replace(/_/g, ' ');
 		imagePaths = promptsData[randomPrompt].slice(0, 6);
@@ -257,12 +257,12 @@
 
 <style lang="postcss">
 	.board {
-		@apply grid gap-1.5 grid-rows-[7] mx-0 my-auto;
+		@apply relative grid gap-1.5 grid-rows-[7] mx-0 my-auto;
 		--height: min(150px, calc(var(--vh, 100vh) - 310px));
 		height: var(--height);
 	}
 	.row {
-		@apply grid gap-2;
+		@apply relative grid gap-2;
 		grid-template-columns: repeat(var(--cols), 1fr);
 	}
 
@@ -270,6 +270,8 @@
 		@apply w-full text-base text-center font-bold
         uppercase select-none relative bg-gray-50 text-black;
 		vertical-align: middle;
+		transform: translateZ(0);
+		transform-style: preserve-3d;
 	}
 
 	.tile .filled {
@@ -280,8 +282,6 @@
 	.tile .back {
 		@apply box-border inline-flex justify-center items-center w-full h-full
 		absolute top-0 left-0 transition-transform duration-500;
-		backface-visibility: hidden;
-		-webkit-backface-visibility: hidden;
 	}
 	.tile .letter {
 		@apply flex place-items-center h-full bg-gray-50 z-10;
