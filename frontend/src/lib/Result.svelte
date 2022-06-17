@@ -2,6 +2,10 @@
 	import { colors, cheersMessages } from '$lib/utils';
 	import type { Board } from '../types';
 	import { fade } from 'svelte/transition';
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
+
 	export let board: Board;
 	export let currentRowIndex: number;
 	export let imagePaths: string[];
@@ -11,26 +15,29 @@
 	const imageBaseUrl = import.meta.env.MODE === 'development' ? 'http://localhost:7860/' : '';
 
 	let elToShare: HTMLDivElement;
-	// let domToImage: DomToImage;
-	let copyState = false;
-	// onMount(async () => {
-	// 	domToImage = (await import('dom-to-image')) as unknown as DomToImage;
-	// });
-	async function writeClipDOM(node: HTMLDivElement) {
+	let disableDownload: boolean = false;
+	async function saveFile(node: HTMLDivElement) {
+		disableDownload = true;
 		try {
-			await navigator.clipboard.write([
-				new ClipboardItem({
-					'image/png': domtoimage.toBlob(node, { bgcolor: '#000' })
-				})
-			]);
-			copyState = true;
-			setTimeout(() => (copyState = false), 1000);
-			console.log('Fetched image copied.');
+			const blob = await domtoimage.toBlob(node, { bgcolor: '#000' });
+			const a = document.createElement('a');
+			a.download = `sucess-${Date.now()}.png`;
+			a.onclick = async (e) => {
+				disableDownload = true;
+				if (a.href) {
+					URL.revokeObjectURL(a.href);
+					disableDownload = false;
+					return;
+				}
+				a.href = URL.createObjectURL(blob);
+				disableDownload = false;
+			};
+			a.click();
+			console.log('Downloding image.');
 		} catch (err) {
 			console.log(err.name, err.message);
 		}
 	}
-
 	const s = 10;
 	const p = 1;
 	const rx = s / 10;
@@ -41,6 +48,12 @@
 	<div class="message">
 		<div class="border-0">
 			<div class="p-3" bind:this={elToShare}>
+				<header class="p-3 flex justify-between items-center">
+					<h1 class="text-xs font-bold uppercase whitespace-nowrap">WORDALLE 🥑</h1>
+					<span class="font-light text-[0.6rem]"
+						><span class="text-gray-50 opacity-50">https://</span>hf.co/wordalle</span
+					>
+				</header>
 				<h2 class="text-center uppercase tracking-widest font-extrabold">{message}</h2>
 				<div class="grid grid-cols-3 gap-2 p-3">
 					{#each imagePaths as image}
@@ -67,26 +80,14 @@
 						{/each}
 					{/each}
 				</svg>
-				<p class="text-[0.6rem] font-extralight text-gray-300 opacity-50">
-					https://huggingface.co/spaces/huggingface-projects/wordalle
-				</p>
 			</div>
 		</div>
-		<p class="p-3 font-normal text-base">
-			Copy the result to clipboard
-			<button class="min-w-[6ch]" on:click={() => writeClipDOM(elToShare)}>
-				{!copyState ? 'Copy' : 'Copied'}
-			</button>. Then go to Twitter and Share
-			<a
-				class="go-tweet"
-				target="_blank"
-				rel="noopener noreferrer"
-				href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fhuggingface.co%2Fspaces%2Fosanseviero%2Fwordalle&via=huggingface&hashtags=dallemini"
-			>
-				Share on Twitter
-			</a>
-			or <button class="min-w-[6ch]" on:click={() => window.location.reload()}> Try again </button>
-		</p>
+		<div class="p-3 px-6 flex text-base">
+			<button disabled={disableDownload} class="min-w-[15ch] flex-1 mr-1" on:click={() => saveFile(elToShare)}>
+				{!disableDownload ? 'SAVE SCREENSHOT' : 'SAVING..'}
+			</button>
+			<button class="flex-1 ml-1" on:click={() => dispatch('restart')}> TRY AGAIN </button>
+		</div>
 	</div>
 </div>
 

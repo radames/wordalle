@@ -13,6 +13,18 @@
 	const totalTime = 1000;
 	const apiUrl = import.meta.env.MODE === 'development' ? 'http://localhost:7860/data' : 'data';
 	const imageBaseUrl = import.meta.env.MODE === 'development' ? 'http://localhost:7860/' : '';
+
+	let promptsData: PromptsData;
+	let completedPrompts: SuccessPrompt[] = [];
+	let currPromptIndex: number;
+	onMount(async () => {
+		promptsData = await fetch(apiUrl).then((d) => d.json());
+		restartBoard();
+
+		window.addEventListener('keyup', onKeyup);
+		return () => window.removeEventListener('keyup', onKeyup);
+	});
+
 	// Get word of the day
 	let answer: string;
 	let imagePaths: string[];
@@ -27,25 +39,20 @@
 
 	// Feedback state: message and shake
 	let message = '';
-	let grid = '';
 	let shakeRowIndex = -1;
 	let success = false;
 	// Handle keyboard input.
 	let allowInput = true;
 
-	let promptsData: PromptsData;
-	let completedPrompts: SuccessPrompt[] = [];
-	let currPromptIndex: number;
-
-	onMount(async () => {
-		promptsData = await fetch(apiUrl).then((d) => d.json());
-		restartBoard();
-
-		window.addEventListener('keyup', onKeyup);
-		return () => window.removeEventListener('keyup', onKeyup);
-	});
-
 	function restartBoard() {
+		//reset all states
+		success = false;
+		shakeRowIndex = -1;
+		message = '';
+		currentRowIndex = 0;
+		letterStates = {}
+		allowInput= true;
+		
 		const prompts: string[] = Object.keys(promptsData);
 		currPromptIndex = ~~(Math.random() * prompts.length);
 		const randomPrompt: string = prompts[currPromptIndex];
@@ -171,7 +178,7 @@
 			<Message {message} />
 		{/if}
 		{#if success}
-			<Result {board} {currentRowIndex} {imagePaths} />
+			<Result {board} {currentRowIndex} {imagePaths} on:restart={restartBoard} />
 		{/if}
 		<!-- <div class="message" transition:fade>
 			{message}
@@ -183,7 +190,7 @@
 		<header class="flex justify-between items-center uppercase sm:px-2 text-center">
 			<span class="font-light flex-1 text-xs sm:text-base"> Guess the prompt!</span>
 			<span class="sm:block hidden mx-3 flex-1 border-[0.5px] border-opacity-50 border-gray-400" />
-			<h1 class="text-xl font-bold text-center">🥑 WORDALLE 🥑</h1>
+			<h1 class="text-xl font-bold text-center whitespace-nowrap">🥑 WORDALLE 🥑</h1>
 			<span class="sm:block hidden mx-3 flex-1  border-[0.5px] border-opacity-50 border-gray-400" />
 			<span class="font-light flex-1 text-xs sm:text-base">
 				<button
