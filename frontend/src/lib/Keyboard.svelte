@@ -7,18 +7,21 @@
 
 	const rows = [
 		'qwertyuiop'.split(''),
-		[...'asdfghjkl'.split(''), 'Backspace'],
-		[...'zxcvbnm'.split(''), 'Enter']
+		[...'asdfghjkl'.split('')],
+		['Enter', ...'zxcvbnm'.split(''), 'Backspace']
 	];
 </script>
 
 <div class="my-3 mx-auto select-none max-w-md">
 	{#each rows as row, i}
 		<div class="row">
+			{#if i === 1}
+				<div class="spacer" />
+			{/if}
 			{#each row as key}
-				<!-- svelte-ignore missing-declaration -->
 				<button
-					class="{letterStates[key]} {key.length > 1 && 'big'}"
+					class="{letterStates[key] === undefined ? '' : letterStates[key]} {key.length > 1 &&
+						'big'}"
 					on:click={() => dispatch('keyup', key)}
 				>
 					{#if key === 'Backspace'}
@@ -33,6 +36,9 @@
 					{/if}
 				</button>
 			{/each}
+			{#if i === 1}
+				<div class="spacer" />
+			{/if}
 		</div>
 	{/each}
 </div>
@@ -42,9 +48,18 @@
 		@apply flex w-full mt-0 mb-2 mx-auto touch-manipulation;
 	}
 	button {
-		@apply flex font-bold  m-0 mr-1 p-0 min-h-[30px] min-w-[30px] border-0
+		@apply flex font-bold text-xs m-0 mr-1 p-0 min-h-[58px] border-0
 				rounded-sm justify-center items-center uppercase cursor-pointer
 				transition-all duration-200 ease-in-out flex-1 select-none
 				bg-[#d3d6da] text-[#1a1a1b] hover:scale-105;
+	}
+	button.big {
+		flex: 1.5;
+	}
+	button:last-of-type {
+		margin: 0;
+	}
+	.spacer {
+		flex: 0.5;
 	}
 </style>
