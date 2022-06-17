@@ -7,13 +7,15 @@ import json
 from datasets import load_dataset
 from flask import Flask
 from flask_cors import CORS
+from PIL import Image
 
 app = Flask(__name__, static_url_path='/static')
 
 CORS(app)
 
 TOKEN = os.environ.get('dataset_token')
-dataset = load_dataset("huggingface-projects/wordalle_prompts", use_auth_token=TOKEN)
+dataset = load_dataset(
+    "huggingface-projects/wordalle_prompts", use_auth_token=TOKEN)
 Path("static/images").mkdir(parents=True, exist_ok=True)
 
 # extract images and prompts from dataset and save to dis
@@ -22,8 +24,9 @@ for row in dataset['train']:
     prompt = dataset['train'].features['label'].int2str(row['label'])
     image = row['image']
     hash = uuid.uuid4().hex
-    image_file = Path(f'static/images/{hash}.png')
-    image.save(image_file)
+    image_file = Path(f'static/images/{hash}.jpg')
+    image_compress = image.resize((136, 136), Image.Resampling.LANCZOS)
+    image_compress.save(image_file, optimize=True, quality=95)
     if prompt not in data:
         data[prompt] = []
     data[prompt].append(str(image_file))
@@ -35,6 +38,7 @@ with open('static/data.json', 'w') as f:
 @app.route('/')
 def index():
     return app.send_static_file('index.html')
+
 
 @app.route('/data')
 def getdata():
