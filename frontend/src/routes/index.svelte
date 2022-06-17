@@ -1,6 +1,6 @@
 <script lang="ts">
 	// original code inspired by Evan You https://github.com/yyx990803/vue-wordle/
-	import { LetterState } from '../types';
+	import { LetterState, GameState } from '../types';
 	import type { Board, PromptsData, SuccessPrompt } from '../types';
 	import { clearTile, fillTile } from '$lib/utils';
 
@@ -40,18 +40,18 @@
 	// Feedback state: message and shake
 	let message = '';
 	let shakeRowIndex = -1;
-	let success = false;
+	let gameState: GameState = GameState.PLAYING;
 	// Handle keyboard input.
 	let allowInput = true;
 
 	function restartBoard() {
 		//reset all states
-		success = false;
+		gameState = GameState.PLAYING;
 		shakeRowIndex = -1;
 		message = '';
 		currentRowIndex = 0;
-		letterStates = {}
-		allowInput= true;
+		letterStates = {};
+		allowInput = true;
 
 		const prompts: string[] = Object.keys(promptsData);
 		currPromptIndex = ~~(Math.random() * prompts.length);
@@ -133,7 +133,7 @@
 			if (currentRow.every((tile) => tile.state === LetterState.CORRECT)) {
 				// yay!
 				setTimeout(() => {
-					success = true;
+					gameState = GameState.SUCESS;
 				}, totalTime);
 			} else if (currentRowIndex < board.length - 1) {
 				// go the next row
@@ -143,6 +143,7 @@
 				}, totalTime);
 			} else {
 				// game over :(
+				gameState = GameState.FAIL;
 				setTimeout(() => {
 					showMessage(answer.toUpperCase(), -1);
 				}, totalTime);
@@ -175,9 +176,9 @@
 {#if board !== undefined}
 	<div class="max-w-screen-lg mx-auto px-1 relative z-0 mt-3">
 		{#if message}
-			<Message {message} />
+			<Message {message} {gameState} on:restart={restartBoard}/>
 		{/if}
-		{#if success}
+		{#if gameState === GameState.SUCESS}
 			<Result {board} {currentRowIndex} {imagePaths} on:restart={restartBoard} />
 		{/if}
 		<!-- <div class="message" transition:fade>
@@ -210,7 +211,7 @@
 		<div class="board">
 			{#each board as row, index}
 				<div
-					class="row {shakeRowIndex === index && 'shake'} {success &&
+					class="row {shakeRowIndex === index && 'shake'} {gameState == GameState.SUCESS &&
 						currentRowIndex === index &&
 						'jump'}"
 				>

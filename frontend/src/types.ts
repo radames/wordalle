@@ -5,6 +5,11 @@ export const enum LetterState {
 	ABSENT = 'absent'
 }
 
+export const enum GameState {
+	PLAYING,
+	SUCESS,
+	FAIL
+}
 export interface Tile {
 	letter: string;
 	state: LetterState;
