@@ -25,6 +25,7 @@
 			const blob = await domtoimage.toBlob(node, { bgcolor: '#000' });
 			const a = document.createElement('a');
 			a.download = `sucess-${Date.now()}.png`;
+			a.target = '_self';
 			a.onclick = async (e) => {
 				disableDownload = true;
 				if (a.href) {
@@ -68,7 +69,7 @@
 </script>
 
 <!-- Modal  made with tailwind -->
-<div bind:this={modalEl} class="modal relative z-2" transition:fade>
+<div bind:this={modalEl} class="modal relative z-50" transition:fade>
 	<div class="message">
 		<div class="border-0">
 			<div class="p-3" bind:this={elToShare}>
