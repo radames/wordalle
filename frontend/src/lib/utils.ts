@@ -36,6 +36,16 @@ export const colors = {
 	[LetterState.INITIAL]: '#5d5d5d'
 };
 
+export const badges = {
+	2: 'two',
+	5: 'five',
+	10: 'ten',
+	15: 'fifteen',
+	20: 'twenty',
+	35: 'thirtyfive',
+	50: 'fifty'
+};
+
 export const cheersMessages = [
 	'🤗 Hugging 🤗',
 	'🧞 Genius 🧞',
@@ -43,5 +53,5 @@ export const cheersMessages = [
 	'😲 Impressive 😲',
 	'🧚 Splendid 🧚',
 	'✳ Great ✳',
-	'🍡 Phew 🍡',
+	'🍡 Phew 🍡'
 ];
