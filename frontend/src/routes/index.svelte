@@ -99,7 +99,7 @@
 	function completeRow() {
 		const newBoard = [...board];
 		const currentRow = newBoard[currentRowIndex];
-		const currentletterStates: Record<string, LetterState> = {};
+		const currentletterStates = { ...letterStates };
 
 		if (currentRow.every((tile) => tile.letter)) {
 			const guess = currentRow.map((tile) => tile.letter).join('');
@@ -142,7 +142,6 @@
 			if (currentRow.every((tile) => tile.state === LetterState.CORRECT)) {
 				// yay!
 				completedPrompts = [...completedPrompts, { prompt: answer, idx: currPromptIndex }];
-				console.log(completedPrompts);
 				setTimeout(() => {
 					gameState = GameState.SUCESS;
 				}, totalTime);
@@ -306,7 +305,7 @@
 		transform: scale(-1, 1);
 	}
 	.tile.revealed .back {
-		transform: scale(1, 1)
+		transform: scale(1, 1);
 	}
 
 	@keyframes zoom {
