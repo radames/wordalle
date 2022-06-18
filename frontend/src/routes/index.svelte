@@ -235,13 +235,13 @@
 					{#each row as tile, index}
 						<div class="tile {tile.letter && 'filled'} {tile.state && 'revealed'}">
 							<div
-								class="front {tile.correct === ' ' ? 'space' : ''}"
+								class="front z-0 {tile.correct === ' ' ? 'space' : ''}"
 								style="transition-delay: {index * timePerTile}ms;"
 							>
 								<span class="letter">{tile.letter}</span>
 							</div>
 							<div
-								class="back {tile.state}"
+								class="back z-0 {tile.state}"
 								style="transition-delay: {index * timePerTile}ms; animation-delay: {index * 100}ms;"
 							>
 								{tile.letter}
@@ -267,11 +267,9 @@
 	}
 
 	.tile {
-		@apply w-full text-base text-center font-bold
+		@apply z-0 w-full text-base text-center font-bold
         uppercase select-none relative bg-gray-50 text-black;
 		vertical-align: middle;
-		transform: translateZ(0);
-		transform-style: preserve-3d;
 	}
 
 	.tile .filled {
@@ -280,8 +278,10 @@
 
 	.tile .front,
 	.tile .back {
-		@apply box-border inline-flex justify-center items-center w-full h-full
+		@apply z-10 box-border inline-flex justify-center items-center w-full h-full
 		absolute top-0 left-0 transition-transform duration-500;
+		backface-visibility: hidden;
+		-webkit-backface-visibility: hidden;
 	}
 	.tile .letter {
 		@apply flex place-items-center h-full bg-gray-50 z-10;
@@ -300,15 +300,13 @@
 	}
 
 	.tile .back {
-		transform: rotateX(180deg);
+		transform: scale(0, 1);
 	}
-
 	.tile.revealed .front {
-		transform: rotateX(180deg);
+		transform: scale(-1, 1);
 	}
-
 	.tile.revealed .back {
-		transform: rotateX(0deg);
+		transform: scale(1, 1)
 	}
 
 	@keyframes zoom {
