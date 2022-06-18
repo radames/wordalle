@@ -67,7 +67,8 @@
 
 		answer = randomPrompt.replace(/_/g, ' ');
 		imagePaths = promptsData[randomPrompt].slice(0, 6);
-		console.log(answer);
+		const clue = [...answer].map((a) => (Math.random() > 0.5 ? '*' : a)).join('');
+		console.log("%cCLUE: ","color: red;font-weight:bold", clue);
 		cols = randomPrompt.length;
 		timePerTile = totalTime / cols;
 
