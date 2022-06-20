@@ -221,7 +221,10 @@
 			<span class="font-light flex-1 text-xs sm:text-base">
 				<button
 					tabindex="-1"
-					on:click={() => restartBoard()}
+					on:click={(event) => {
+						restartBoard();
+						event.currentTarget.blur();
+					}}
 					class="hover:no-underline underline underline-offset-2 hover:scale-105 transition-all duration-200 ease-in-out"
 					>Skip to next</button
 				></span
