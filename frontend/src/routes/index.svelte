@@ -24,7 +24,10 @@
 		restartBoard();
 		window.addEventListener('keyup', onKeyup, true);
 		window.addEventListener('resize', onResize);
+		window.focus();
+		document.body.addEventListener('click', () => window.focus(), false);
 	});
+
 	function onResize() {
 		document.body.style.setProperty('--vh', window.innerHeight + 'px');
 	}
