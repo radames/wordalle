@@ -220,6 +220,7 @@
 			<span class="sm:block hidden mx-3 flex-1  border-[0.5px] border-opacity-50 border-gray-400" />
 			<span class="font-light flex-1 text-xs sm:text-base">
 				<button
+					tabindex="-1"
 					on:click={() => restartBoard()}
 					class="hover:no-underline underline underline-offset-2 hover:scale-105 transition-all duration-200 ease-in-out"
 					>Skip to next</button
