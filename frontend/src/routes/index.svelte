@@ -19,10 +19,15 @@
 	let completedPrompts: SuccessPrompt[] = [];
 	let currPromptIndex: number;
 	onMount(async () => {
+		onResize();
 		promptsData = await fetch(apiUrl).then((d) => d.json());
 		restartBoard();
 		window.addEventListener('keyup', onKeyup, true);
+		window.addEventListener('resize', onResize);
 	});
+	function onResize() {
+		document.body.style.setProperty('--vh', window.innerHeight + 'px');
+	}
 
 	onDestroy(() => {
 		if (browser) {
@@ -68,7 +73,7 @@
 		answer = randomPrompt.replace(/_/g, ' ');
 		imagePaths = promptsData[randomPrompt].slice(0, 6);
 		const clue = [...answer].map((a) => (Math.random() > 0.5 ? '*' : a)).join('');
-		console.log("%cCLUE: ","color: red;font-weight:bold", clue);
+		console.log('%cCLUE: ', 'color: red;font-weight:bold', clue);
 		cols = randomPrompt.length;
 		timePerTile = totalTime / cols;
 
@@ -257,12 +262,14 @@
 
 <style lang="postcss">
 	.board {
-		@apply relative grid gap-1.5 grid-rows-[7] mx-0 my-auto;
-		--height: min(150px, calc(var(--vh, 100vh) - 310px));
+		@apply relative grid gap-1 mx-auto;
+		/* box-sizing: border-box; */
+		--height: min(200px, calc(var(--vh, 100vh) - 350px));
 		height: var(--height);
+		width: min(90vw, calc(var(--height) / 7 * var(--cols)));
 	}
 	.row {
-		@apply relative grid gap-2;
+		@apply relative grid gap-1;
 		grid-template-columns: repeat(var(--cols), 1fr);
 	}
 
