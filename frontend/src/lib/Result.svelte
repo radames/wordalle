@@ -121,7 +121,7 @@
 			>
 				{!disableDownload ? 'SAVE SCREENSHOT' : 'SAVING..'}
 			</button>
-			<button class="flex-1 ml-1" on:click={() => dispatch('restart')}> TRY AGAIN </button>
+			<button class="flex-1 ml-1" on:click={() => dispatch('restart')}> NEXT </button>
 		</div>
 	</div>
 </div>
