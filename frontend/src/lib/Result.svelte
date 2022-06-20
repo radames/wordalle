@@ -57,12 +57,12 @@
 			const compName = badgesComponents[totalStreaks];
 			badgeComponent = (await import(`./badges/${compName}.svelte`)).default;
 		}
-		window.addEventListener('keyup', onKeyup, true);
+		// window.addEventListener('keyup', onKeyup, true);
 	});
 
-	onDestroy(() => {
-		window.removeEventListener('keyup', onKeyup, true);
-	});
+	// onDestroy(() => {
+	// 	window.removeEventListener('keyup', onKeyup, true);
+	// });
 	const s = 10;
 	const p = 1;
 	const rx = s / 10;
