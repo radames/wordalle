@@ -38,7 +38,6 @@ db = sqlite3.connect(DB_FILE)
 try:
     data = db.execute("SELECT * FROM prompts").fetchall()
     db.close()
-    print("DB DATA", data)
 except sqlite3.OperationalError:
     db.execute('CREATE TABLE prompts (guess TEXT, correct TEXT)')
     db.commit()
@@ -99,9 +98,14 @@ def create():
         except:
             return 'Missing guess or correct', 400
 
+
 if __name__ == '__main__':
-    scheduler = APScheduler()
-    scheduler.add_job(id = 'Update Dataset Repository', func = update_repository, trigger = 'interval', seconds = 300)
-    scheduler.start()
+    mode = os.environ.get('FLASK_ENV', 'production')
+    print(mode)
+    if mode != 'development':
+        scheduler = APScheduler()
+        scheduler.add_job(id='Update Dataset Repository',
+                          func=update_repository, trigger='interval', seconds=300)
+        scheduler.start()
     app.run(host='0.0.0.0',  port=int(
         os.environ.get('PORT', 7860)), debug=True)
