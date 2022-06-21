@@ -1,7 +1,7 @@
 <script lang="ts">
 	// original code inspired by Evan You https://github.com/yyx990803/vue-wordle/
 	import { LetterState, GameState } from '../types';
-	import type { Board, PromptsData, SuccessPrompt } from '../types';
+	import type { Board, PromptsData, SuccessPrompt, Tile } from '../types';
 	import { clearTile, fillTile } from '$lib/utils';
 
 	import Keyboard from '$lib/Keyboard.svelte';
@@ -12,15 +12,14 @@
 	import { browser } from '$app/env';
 
 	const totalTime = 1000;
-	const apiUrl = import.meta.env.MODE === 'development' ? 'http://localhost:7860/data' : 'data';
-	const imageBaseUrl = import.meta.env.MODE === 'development' ? 'http://localhost:7860/' : '';
+	const apiUrl = import.meta.env.MODE === 'development' ? 'http://localhost:7860/' : '';
 
 	let promptsData: PromptsData;
 	let completedPrompts: SuccessPrompt[] = [];
 	let currPromptIndex: number;
 	onMount(async () => {
 		onResize();
-		promptsData = await fetch(apiUrl).then((d) => d.json());
+		promptsData = await fetch(apiUrl + 'data').then((d) => d.json());
 		restartBoard();
 		window.addEventListener('keyup', onKeyup, true);
 		window.addEventListener('resize', onResize);
@@ -117,6 +116,7 @@
 			//   showMessage(`Not in word list`)
 			//   return
 			// }
+			postProcess(currentRow);
 
 			const answerLetters: (string | null)[] = answer.split('');
 			// first pass: mark correct ones
@@ -190,6 +190,20 @@
 			shakeRowIndex = -1;
 		}, 1000);
 	}
+	async function postProcess(currentRow: Tile[]) {
+		const guess = currentRow.map((tile) => tile.letter).join('');
+		const correct = currentRow.map((tile) => tile.correct).join('');
+		fetch(apiUrl + 'prompt', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				guess: guess,
+				correct: correct
+			})
+		});
+	}
 </script>
 
 {#if board !== undefined}
@@ -233,7 +247,7 @@
 		<div class="grid grid-cols-3 gap-2 max-w-md mx-auto p-3">
 			{#each imagePaths as image}
 				<div>
-					<img src={imageBaseUrl + image} alt="" class="aspect-square w-full h-full" />
+					<img src={apiUrl + image} alt="" class="aspect-square w-full h-full" />
 				</div>
 			{/each}
 		</div>

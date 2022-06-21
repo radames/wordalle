@@ -13,7 +13,7 @@
 	export let totalStreaks: number;
 	const message = cheersMessages[currentRowIndex];
 	import domtoimage from 'dom-to-image';
-	const imageBaseUrl = import.meta.env.MODE === 'development' ? 'http://localhost:7860/' : '';
+	const apiUrl = import.meta.env.MODE === 'development' ? 'http://localhost:7860/' : '';
 
 	let modalEl: HTMLDivElement;
 	let elToShare: HTMLDivElement;
@@ -89,7 +89,7 @@
 					{/if}
 					{#each imagePaths as image}
 						<div>
-							<img src={imageBaseUrl + image} alt="" class="aspect-square	w-full h-full" />
+							<img src={apiUrl + image} alt="" class="aspect-square	w-full h-full" />
 						</div>
 					{/each}
 				</div>
