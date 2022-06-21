@@ -13,7 +13,7 @@
 
 	const totalTime = 1000;
 	const apiUrl = import.meta.env.MODE === 'development' ? 'http://localhost:7860/' : '';
-
+	let allowShare = true;
 	let promptsData: PromptsData;
 	let completedPrompts: SuccessPrompt[] = [];
 	let currPromptIndex: number;
@@ -116,7 +116,9 @@
 			//   showMessage(`Not in word list`)
 			//   return
 			// }
-			postProcess(currentRow);
+			if (allowShare) {
+				postProcess(currentRow);
+			}
 
 			const answerLetters: (string | null)[] = answer.split('');
 			// first pass: mark correct ones
@@ -278,6 +280,21 @@
 			{/each}
 		</div>
 		<Keyboard on:keyup={({ detail }) => onKey(detail)} bind:letterStates />
+		<footer class="max-w-md mx-auto p-3">
+			<details class="text-xs cursor-pointer">
+				<summary class="my-1">
+					<span>Disclaimer</span>
+				</summary>
+				<p>
+					This demo collects the guesses to help with a research project. The demo stores no
+					personal data, such as your IP address, email, or account, only your guesses.
+				</p>
+				<label class="py-3 flex">
+					<input type="checkbox" bind:checked={allowShare} />
+					<span class="mx-1">Please uncheck to disable sharing {allowShare}</span>
+				</label>
+			</details>
+		</footer>
 	</div>
 {/if}
 
