@@ -25,5 +25,4 @@ htmlcov/
 *,cover
 venv
 *_cache.json
-static
 data
