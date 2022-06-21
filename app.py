@@ -101,7 +101,7 @@ def create():
 
 if __name__ == '__main__':
     scheduler = APScheduler()
-    scheduler.add_job(id = 'Update Dataset Repository', func = update_repository, trigger = 'interval', seconds = 60)
+    scheduler.add_job(id = 'Update Dataset Repository', func = update_repository, trigger = 'interval', seconds = 300)
     scheduler.start()
     app.run(host='0.0.0.0',  port=int(
         os.environ.get('PORT', 7860)), debug=True)
