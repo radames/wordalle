@@ -8,7 +8,7 @@ from datasets import load_dataset
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_apscheduler import APScheduler
-
+import shutil
 from PIL import Image
 import sqlite3
 from huggingface_hub import Repository
@@ -19,7 +19,7 @@ CORS(app)
 
 TOKEN = os.environ.get('dataset_token')
 
-DB_FILE = Path("./data/prompts.db")
+DB_FILE = Path("./prompts.db")
 
 repo = Repository(
     local_dir="data",
@@ -28,10 +28,13 @@ repo = Repository(
     use_auth_token=TOKEN
 )
 repo.git_pull()
+# copy db on db to local path
+shutil.copyfile("./data/prompts.db", DB_FILE)
 
 dataset = load_dataset(
     "huggingface-projects/wordalle_prompts",
     use_auth_token=TOKEN)
+
 Path("static/images").mkdir(parents=True, exist_ok=True)
 
 db = sqlite3.connect(DB_FILE)
@@ -60,7 +63,11 @@ with open('static/data.json', 'w') as f:
 
 
 def update_repository():
-    with sqlite3.connect(DB_FILE) as db:
+    repo.git_pull()
+    # copy db on db to local path
+    shutil.copyfile(DB_FILE, "./data/prompts.db")
+
+    with sqlite3.connect("./data/prompts.db") as db:
         db.row_factory = sqlite3.Row
         result = db.execute("SELECT * FROM prompts").fetchall()
         data = [dict(row) for row in result]
@@ -69,7 +76,6 @@ def update_repository():
         json.dump(data, f, separators=(',', ':'))
 
     print("Updating repository")
-    repo.git_pull()
     repo.push_to_hub(blocking=False)
 
 
@@ -77,6 +83,21 @@ def update_repository():
 def index():
     return app.send_static_file('index.html')
 
+
+@app.route('/force_push')
+def push():
+    if(request.headers['token'] == TOKEN):
+        print("Force Push repository")
+        shutil.copyfile(DB_FILE, "./data/prompts.db")
+        oldpwd = os.getcwd()
+        os.chdir("./data")
+        os.system("git add .")
+        os.system("git commit -m 'force push'")
+        os.system("git push --force")
+        os.chdir(oldpwd)
+        return "Success", 200
+    else:
+        return "Error", 401
 
 @app.route('/data')
 def getdata():
@@ -105,7 +126,7 @@ if __name__ == '__main__':
     if mode != 'development':
         scheduler = APScheduler()
         scheduler.add_job(id='Update Dataset Repository',
-                          func=update_repository, trigger='interval', seconds=300)
+                        func=update_repository, trigger='interval', seconds=300)
         scheduler.start()
     app.run(host='0.0.0.0',  port=int(
         os.environ.get('PORT', 7860)), debug=True)
