@@ -9,10 +9,11 @@
 	import Message from '$lib/Message.svelte';
 
 	import { onMount, onDestroy } from 'svelte';
-	import { browser } from '$app/env';
+	import { browser, dev } from '$app/env';
+	import { base } from '$app/paths';
 
 	const totalTime = 1000;
-	const apiUrl = import.meta.env.MODE === 'development' ? 'http://localhost:7860/' : '';
+	const apiUrl = dev ? 'http://localhost:7860/' : '';
 	let allowShare = true;
 	let promptsData: PromptsData;
 	let completedPrompts: SuccessPrompt[] = [];
@@ -72,11 +73,11 @@
 		const randomPrompt: string = promptsFiltered[radomPromptId];
 		currPromptIndex = prompts.indexOf(randomPrompt);
 
-		answer = randomPrompt.replace(/_/g, ' ');
+		answer = 'cat eating noodle'; //randomPrompt.replace(/_/g, ' ');
 		imagePaths = promptsData[randomPrompt].slice(0, 6);
 		const clue = [...answer].map((a) => (Math.random() > 0.5 ? '*' : a)).join('');
 		console.log('%cCLUE: ', 'color: red;font-weight:bold', clue);
-		cols = randomPrompt.length;
+		cols = answer.length;
 		timePerTile = totalTime / cols;
 
 		board = Array.from({ length: 7 }, () =>
@@ -280,9 +281,40 @@
 			{/each}
 		</div>
 		<Keyboard on:keyup={({ detail }) => onKey(detail)} bind:letterStates />
-		<footer class="max-w-md mx-auto p-3">
-			<details class="text-xs cursor-pointer">
-				<summary class="my-1">
+		<footer class="max-w-md mx-auto pt-3">
+			<details class="text-xs my-3">
+				<summary class="cursor-pointer my-2">
+					<span>About</span>
+				</summary>
+				<p>
+					Welcome to Wordalle! The game that marries <a
+						href="https://huggingface.co/spaces/dalle-mini/dalle-mini"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="underline hover:text-blue-500 hover:no-underline"
+					>
+						DALLE mini</a
+					> & Wordle!”
+				</p>
+				<h2 class="font-bold my-2">Instructions</h2>
+				<p>
+					You are given a board with a grid of letters. You must guess the prompt used to generate
+					the images.
+				</p>
+				<p>
+					Your guess must contain the same number of letters as tiles. After you guess, the tiles
+					will be revealed.
+				</p>
+				<h2 class="font-bold my-2">Example</h2>
+				<p class="pb-3">
+					The green tiles are correct letter placements. The yellow tiles are correct letters but in
+					wrong position and the gray tiles are letters not present in the prompt.
+					<img alt="wordalle example for dog eating pastas" src={base + '/img1.jpg'} />
+					<img alt="wordalle example for cat eating noodle " src={base + '/img2.jpg'} />
+				</p>
+			</details>
+			<details class="text-xs my-3">
+				<summary class="cursor-pointer my-2">
 					<span>Disclaimer</span>
 				</summary>
 				<p>

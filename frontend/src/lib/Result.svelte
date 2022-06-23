@@ -4,6 +4,7 @@
 	import { fade, scale } from 'svelte/transition';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import type { SvelteComponent } from 'svelte';
+	import { dev } from '$app/env';
 
 	const dispatch = createEventDispatcher();
 
@@ -13,7 +14,7 @@
 	export let totalStreaks: number;
 	const message = cheersMessages[currentRowIndex];
 	import domtoimage from 'dom-to-image';
-	const apiUrl = import.meta.env.MODE === 'development' ? 'http://localhost:7860/' : '';
+	const apiUrl = dev ? 'http://localhost:7860/' : '';
 
 	let modalEl: HTMLDivElement;
 	let elToShare: HTMLDivElement;
