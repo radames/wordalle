@@ -26,3 +26,6 @@ htmlcov/
 venv
 *_cache.json
 data
+prompts.db
+static/data.json
+static/images

@@ -99,6 +99,7 @@ def push():
     else:
         return "Error", 401
 
+
 @app.route('/data')
 def getdata():
     return app.send_static_file('data.json')
@@ -123,10 +124,11 @@ def create():
 if __name__ == '__main__':
     mode = os.environ.get('FLASK_ENV', 'production')
     print(mode)
-    if mode != 'development':
+    dev = mode == 'development'
+    if not dev:
         scheduler = APScheduler()
         scheduler.add_job(id='Update Dataset Repository',
-                        func=update_repository, trigger='interval', seconds=300)
+                          func=update_repository, trigger='interval', seconds=300)
         scheduler.start()
     app.run(host='0.0.0.0',  port=int(
-        os.environ.get('PORT', 7860)), debug=True)
+        os.environ.get('PORT', 7860)), debug=True, use_reloader=dev)
