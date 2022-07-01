@@ -126,9 +126,12 @@ if __name__ == '__main__':
     print(mode)
     dev = mode == 'development'
     if not dev:
+        print("Starting scheduler -- Running Production")
         scheduler = APScheduler()
         scheduler.add_job(id='Update Dataset Repository',
                           func=update_repository, trigger='interval', seconds=300)
         scheduler.start()
+    else:
+        print("Not Starting scheduler -- Running Development")
     app.run(host='0.0.0.0',  port=int(
         os.environ.get('PORT', 7860)), debug=True, use_reloader=dev)
