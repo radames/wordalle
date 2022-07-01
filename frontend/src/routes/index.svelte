@@ -7,6 +7,7 @@
 	import Keyboard from '$lib/Keyboard.svelte';
 	import Result from '$lib/Result.svelte';
 	import Message from '$lib/Message.svelte';
+	import { currentUser, completedPromptsStore } from '$lib/store';
 
 	import { onMount, onDestroy } from 'svelte';
 	import { browser, dev } from '$app/env';
@@ -21,11 +22,21 @@
 	onMount(async () => {
 		onResize();
 		promptsData = await fetch(apiUrl + 'data').then((d) => d.json());
+
+		completedPrompts = $completedPromptsStore;
+		if (completedPrompts.length >= Object.keys(promptsData).length) {
+			gameState = GameState.COMPLETED;
+		}
+
+		console.log('Current User Data:', $currentUser);
+		console.log('Completed Prompts:', $completedPromptsStore);
+
 		restartBoard();
 		window.addEventListener('keyup', onKeyup, true);
 		window.addEventListener('resize', onResize);
 		window.focus();
 		document.body.addEventListener('click', () => window.focus(), false);
+		// update completed prompts with local storage data
 	});
 
 	function onResize() {
@@ -53,13 +64,12 @@
 	// Feedback state: message and shake
 	let message = '';
 	let shakeRowIndex = -1;
-	let gameState: GameState = GameState.PLAYING;
+	let gameState: GameState = GameState.LOADING;
 	// Handle keyboard input.
 	let allowInput = true;
 
 	function restartBoard() {
 		//reset all states
-		gameState = GameState.PLAYING;
 		shakeRowIndex = -1;
 		message = '';
 		currentRowIndex = 0;
@@ -67,6 +77,16 @@
 		allowInput = true;
 
 		const prompts: string[] = Object.keys(promptsData);
+
+		if (completedPrompts.length >= prompts.length || gameState === GameState.COMPLETED) {
+			showMessage("You've completed all prompts. Please come back later for more!", -1);
+			gameState = GameState.COMPLETED;
+			allowInput = false;
+			completedPrompts = [];
+		} else {
+			gameState = GameState.PLAYING;
+		}
+
 		const idsToRemove = completedPrompts.map((e) => e.idx);
 		const promptsFiltered = prompts.filter((_, i) => !idsToRemove.includes(i));
 		const radomPromptId = ~~(Math.random() * promptsFiltered.length);
@@ -77,6 +97,7 @@
 		imagePaths = promptsData[randomPrompt].slice(0, 6);
 		const clue = [...answer].map((a) => (Math.random() > 0.5 ? '*' : a)).join('');
 		console.log('%cCLUE: ', 'color: red;font-weight:bold', clue);
+		// console.log(answer);
 		cols = answer.length;
 		timePerTile = totalTime / cols;
 
@@ -154,6 +175,8 @@
 			if (currentRow.every((tile) => tile.state === LetterState.CORRECT)) {
 				// yay!
 				completedPrompts = [...completedPrompts, { prompt: answer, idx: currPromptIndex }];
+				$completedPromptsStore = completedPrompts;
+
 				setTimeout(() => {
 					gameState = GameState.SUCESS;
 				}, totalTime);

@@ -6,9 +6,11 @@ export const enum LetterState {
 }
 
 export const enum GameState {
+	LOADING,
 	PLAYING,
 	SUCESS,
-	FAIL
+	FAIL,
+	COMPLETED
 }
 export interface Tile {
 	letter: string;
@@ -27,3 +29,5 @@ export interface SuccessPrompt {
 	prompt: string;
 	idx: number;
 }
+
+export type User = string;

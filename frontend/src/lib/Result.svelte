@@ -44,7 +44,7 @@
 		}
 	}
 	const onKeyup = (e: KeyboardEvent) => {
-		if (e.key === 'Escape') {
+		if (e.key === 'Escape' || e.key === 'Enter') {
 			dispatch('restart');
 		} else if (e.key === ' ') {
 			saveFile(elToShare);
@@ -58,7 +58,9 @@
 			const compName = badgesComponents[totalStreaks];
 			badgeComponent = (await import(`./badges/${compName}.svelte`)).default;
 		}
-		window.addEventListener('keyup', onKeyup, true);
+		setTimeout(() => {
+			window.addEventListener('keyup', onKeyup, true);
+		}, 1000);
 	});
 
 	onDestroy(() => {
