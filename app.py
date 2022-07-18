@@ -12,6 +12,7 @@ import shutil
 from PIL import Image
 import sqlite3
 from huggingface_hub import Repository
+import subprocess
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -71,41 +72,39 @@ def update_repository():
         db.row_factory = sqlite3.Row
         result = db.execute("SELECT * FROM prompts").fetchall()
         # data = [dict(row) for row in result]
-
+    os
     # with open('./data/data.json', 'w') as f:
     #     json.dump(data, f, separators=(',', ':'))
 
     print("Updating repository")
-    repo.push_to_hub(blocking=False)
+    subprocess.Popen(
+        "git add . && git commit --amend -m 'update' && git push --force", cwd="./data", shell=True)
+    # repo.push_to_hub(blocking=False)
 
 
-@app.route('/')
+@ app.route('/')
 def index():
     return app.send_static_file('index.html')
 
 
-@app.route('/force_push')
+@ app.route('/force_push')
 def push():
     if(request.headers['token'] == TOKEN):
         print("Force Push repository")
         shutil.copyfile(DB_FILE, "./data/prompts.db")
-        oldpwd = os.getcwd()
-        os.chdir("./data")
-        os.system("git add .")
-        os.system("git commit -m 'force push'")
-        os.system("git push --force")
-        os.chdir(oldpwd)
+        subprocess.Popen(
+            "git add . && git commit --amend -m 'update' && git push --force", cwd="./data", shell=True)
         return "Success", 200
     else:
         return "Error", 401
 
 
-@app.route('/data')
+@ app.route('/data')
 def getdata():
     return app.send_static_file('data.json')
 
 
-@app.route('/prompt', methods=['POST', 'GET'])
+@ app.route('/prompt', methods=['POST', 'GET'])
 def create():
     if request.method == 'POST':
         try:
@@ -129,7 +128,7 @@ if __name__ == '__main__':
         print("Starting scheduler -- Running Production")
         scheduler = APScheduler()
         scheduler.add_job(id='Update Dataset Repository',
-                          func=update_repository, trigger='interval', hours=24)
+                          func=update_repository, trigger='interval', hours=1)
         scheduler.start()
     else:
         print("Not Starting scheduler -- Running Development")
