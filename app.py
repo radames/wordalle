@@ -70,10 +70,10 @@ def update_repository():
     with sqlite3.connect("./data/prompts.db") as db:
         db.row_factory = sqlite3.Row
         result = db.execute("SELECT * FROM prompts").fetchall()
-        data = [dict(row) for row in result]
+        # data = [dict(row) for row in result]
 
-    with open('./data/data.json', 'w') as f:
-        json.dump(data, f, separators=(',', ':'))
+    # with open('./data/data.json', 'w') as f:
+    #     json.dump(data, f, separators=(',', ':'))
 
     print("Updating repository")
     repo.push_to_hub(blocking=False)
