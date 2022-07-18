@@ -129,7 +129,7 @@ if __name__ == '__main__':
         print("Starting scheduler -- Running Production")
         scheduler = APScheduler()
         scheduler.add_job(id='Update Dataset Repository',
-                          func=update_repository, trigger='interval', seconds=300)
+                          func=update_repository, trigger='interval', hours=24)
         scheduler.start()
     else:
         print("Not Starting scheduler -- Running Development")
