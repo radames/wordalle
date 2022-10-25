@@ -13,9 +13,6 @@ const config = {
 	}),
 
 	kit: {
-		paths: {
-			base: dev ? '/static' : '/embed/huggingface-projects/wordalle/static'
-		},
 		adapter: adapter({
 			pages: 'build',
 			assets: 'build',
