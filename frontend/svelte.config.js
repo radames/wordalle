@@ -13,6 +13,9 @@ const config = {
 	}),
 
 	kit: {
+		paths: {
+			base: '/static'
+		},
 		adapter: adapter({
 			pages: 'build',
 			assets: 'build',
